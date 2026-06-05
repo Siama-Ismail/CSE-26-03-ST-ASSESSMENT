@@ -14,7 +14,6 @@ class VideoUploadManager {
     this.videoInput = document.getElementById('videoInput');
     this.thumbnailInput = document.getElementById('thumbnailInput');
     this.submitBtn = document.getElementById('submitBtn');
-    this.resetBtn = document.getElementById('resetBtn');
 
     if (!this.form) return; // Exit if no form found
 
@@ -51,9 +50,6 @@ class VideoUploadManager {
     // Buttons
     if (this.submitBtn) {
       this.submitBtn.addEventListener('click', (e) => this.handleSubmit(e));
-    }
-    if (this.resetBtn) {
-      this.resetBtn.addEventListener('click', () => this.resetForm());
     }
   }
 
@@ -135,13 +131,15 @@ class VideoUploadManager {
       }
 
       preview.innerHTML = `
-        <div class="preview-title">Preview</div>
-        <video class="preview-video" controls>
-          <source src="${e.target.result}" type="${file.type}">
-        </video>
-        <p style="margin-top: 10px; font-size: 12px; color: #999;">
-          File: ${file.name} (${this.formatFileSize(file.size)})
-        </p>
+        <div class="preview-video">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 36px; gap: 2px;">
+            <div style="position: relative; display: inline-block;">
+              <span style="font-size: 40px;">☁️</span>
+              <span style="position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 18px;">⬆️</span>
+            </div>
+            <div style="font-size: 11px; margin-top: 6px;">Upload video</div>
+          </div>
+        </div>
       `;
       preview.classList.add('show');
     };
@@ -159,11 +157,7 @@ class VideoUploadManager {
       }
 
       preview.innerHTML = `
-        <div class="preview-title">Preview</div>
         <img class="preview-image" src="${e.target.result}" alt="Thumbnail preview">
-        <p style="margin-top: 10px; font-size: 12px; color: #999;">
-          File: ${file.name} (${this.formatFileSize(file.size)})
-        </p>
       `;
       preview.classList.add('show');
     };

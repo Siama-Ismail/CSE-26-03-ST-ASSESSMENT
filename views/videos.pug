@@ -6,17 +6,11 @@ html(lang="en")
     title= title
     link(rel="stylesheet" href="/css/style.css")
   body
-    header
-      .logo Videx
-      nav
-        a(href="/videos") My Videos
-        a(href="/upload") Upload
-        a(href="/") Home
     
     .container
       .videos-header
         h1 My Videos
-        a.btn-upload(href="/upload") + Upload Video
+        a.btn-upload(href="/upload") + Add Video
       
       if videos && videos.length > 0
         .videos-grid

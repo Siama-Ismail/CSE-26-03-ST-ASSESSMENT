@@ -4,35 +4,46 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= title
-    link(rel="stylesheet" href="/css/style.css")
-  body
-    header
-      .logo Videx
-      nav
-        a(href="/videos") My Videos
-        a(href="/upload") Upload
-        a(href="/") Home
 
+    link(rel="stylesheet" href="/css/style.css")
+
+    // Bootstrap Icons
+    link(
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    )
+
+  body
     .upload-container
       h1 Upload your video
-      
+
       form#uploadForm
         // Success message (will be shown by JavaScript)
         .success-message
 
         .upload-wrapper
+
           // Left Column - Form Fields
           .upload-form-left
+
             // Title Field
             .form-group
               label(for="title") Video Title
-              input#title(type="text" name="title" placeholder="Enter a catchy title" required)
+              input#title(
+                type="text"
+                name="title"
+                placeholder="Enter a catchy title"
+                required
+              )
               .error-message
 
             // Description Field
             .form-group
               label(for="description") Description (Optional)
-              textarea#description(name="description" placeholder="Describe what your video is about...")
+              textarea#description(
+                name="description"
+                placeholder="Describe what your video is about..."
+              )
               .error-message
 
             // Quality Selection
@@ -48,42 +59,68 @@ html(lang="en")
             // Category Field
             .form-group
               label(for="category") Category
-              input#category(type="text" name="category" placeholder="Gaming, Music, Education..." required)
+              input#category(
+                type="text"
+                name="category"
+                placeholder="Gaming, Music, Education..."
+                required
+              )
               .error-message
 
-            // Tags Field
+            // Date Field
             .form-group
-              label(for="tags") Tags
-              input#tags(type="text" name="tags" placeholder="comma separated" required)
+              label(for="tags") Date
+              input#tags(type="date" name="tags" required)
               .error-message
 
           // Right Column - Upload Areas
           .upload-form-right
+
             // Video Upload Area
             .form-group
               label Video File *
+
               #videoUploadArea.file-upload-area
-                .file-upload-icon 📹
+                i.bi.bi-cloud-arrow-up-fill.file-upload-icon
+
                 .file-upload-text
                   strong Upload video
+                  br
                   | Drag and drop or click
-                input#videoInput(type="file" name="video" accept="video/*" required)
+
+                input#videoInput(
+                  type="file"
+                  name="video"
+                  accept="video/*"
+                  required
+                )
+
                 .preview-area
 
             // Thumbnail Upload Area
             .form-group
               label Thumbnail Image *
+
               #thumbnailUploadArea.file-upload-area
                 .file-upload-icon ☁️
+
                 .file-upload-text
                   strong Upload Thumbnail
+                  br
                   | Drag and drop or click
-                input#thumbnailInput(type="file" name="thumbnail" accept="image/*" required)
+
+                input#thumbnailInput(
+                  type="file"
+                  name="thumbnail"
+                  accept="image/*"
+                  required
+                )
+
                 .preview-area
 
-        // Form Buttons
-        .form-buttons
-          button#submitBtn.btn-submit(type="button") UPLOAD
-          button#resetBtn.btn-reset(type="button") Unsubmit me
+            // Upload Button
+            .form-buttons
+              button#submitBtn.btn-submit(type="button")
+                | UPLOAD
 
     script(src="/js/script.js")

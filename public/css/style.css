@@ -175,28 +175,28 @@ nav a:hover {
 
 .videos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
   margin-top: 30px;
 }
 
 .video-card {
   background: white;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .video-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .video-thumbnail {
   width: 100%;
-  height: 150px;
+  height: 120px;
   background: #333;
   position: relative;
   overflow: hidden;
@@ -214,13 +214,13 @@ nav a:hover {
   left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(255, 255, 255, 0.8);
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 18px;
   opacity: 0;
   transition: all 0.3s ease;
 }
@@ -230,14 +230,14 @@ nav a:hover {
 }
 
 .video-info {
-  padding: 15px;
+  padding: 12px;
 }
 
 .video-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -247,22 +247,21 @@ nav a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
-  margin-bottom: 10px;
 }
 
 .quality-badge {
   background: #e74c3c;
   color: white;
-  padding: 3px 8px;
-  border-radius: 3px;
-  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: 10px;
   font-weight: bold;
 }
 
 .video-date {
-  font-size: 12px;
+  font-size: 11px;
   color: #bbb;
 }
 
@@ -315,6 +314,7 @@ label {
 
 input[type="text"],
 input[type="email"],
+input[type="date"],
 textarea,
 select {
   width: 100%;
@@ -350,12 +350,12 @@ textarea {
 .file-upload-area {
   border: 2px dashed #ccc;
   border-radius: 5px;
-  padding: 40px 20px;
+  padding: 25px 15px;
   text-align: center;
   transition: all 0.3s ease;
   background: #fafafa;
   cursor: pointer;
-  min-height: 150px;
+  min-height: 140px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -378,25 +378,27 @@ textarea {
 
 .file-upload-icon {
   font-size: 32px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .file-upload-text {
   color: #999;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .file-upload-text strong {
   color: #666;
   display: block;
-  margin-bottom: 3px;
-  font-size: 13px;
+  margin-bottom: 5px;
+  font-size: 14px;
 }
 
 /* ── Preview Areas ─────────────────────────────────────────────────────────── */
 .preview-area {
-  margin-top: 15px;
+  margin-top: 10px;
   display: none;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .preview-area.show {
@@ -404,25 +406,26 @@ textarea {
 }
 
 .preview-title {
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 600;
   text-transform: uppercase;
+  display: none;
 }
 
 .preview-image {
   width: 100%;
-  max-height: 200px;
-  border-radius: 5px;
+  height: 140px;
+  border-radius: 3px;
   object-fit: cover;
 }
 
 .preview-video {
   width: 100%;
-  height: 200px;
-  border-radius: 5px;
-  background: #000;
+  height: 140px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #d5e5f7 0%, #c5d3f0 100%);
 }
 
 /* ── Error Messages ────────────────────────────────────────────────────────── */
@@ -445,13 +448,16 @@ textarea {
 .form-buttons {
   display: flex;
   gap: 15px;
-  margin-top: 30px;
-  justify-content: flex-end;
+  margin-top: 0;
+}
+
+.upload-form-right .form-buttons {
+  margin-top: 10px;
 }
 
 button {
-  padding: 12px 40px;
-  font-size: 14px;
+  padding: 16px 30px;
+  font-size: 16px;
   font-weight: bold;
   border: none;
   border-radius: 3px;
@@ -462,6 +468,9 @@ button {
 .btn-submit {
   background: #e74c3c;
   color: white;
+  width: 100%;
+  font-size: 14px;
+  padding: 12px 30px;
 }
 
 .btn-submit:hover {
