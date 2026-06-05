@@ -3,12 +3,12 @@ const router = express.Router();
 const upload = require('../middleware/upload');
 const Video = require('../models/Video');
 
-// ── Landing page ──────────────────────────────────────────────────────────────
+// Landing page 
 router.get('/', (req, res) => {
   res.render('index', { title: 'Videx - Video Streaming Platform' });
 });
 
-// ── Videos page (after joining) ───────────────────────────────────────────────
+//Videos page (after joining)
 router.get('/videos', async (req, res) => {
   try {
     const videos = await Video.find().latest();
@@ -22,12 +22,12 @@ router.get('/videos', async (req, res) => {
   }
 });
 
-// ── Upload video page ─────────────────────────────────────────────────────────
+//  Upload video page
 router.get('/upload', (req, res) => {
   res.render('upload', { title: 'Upload Video' });
 });
 
-// ── API: Upload video ─────────────────────────────────────────────────────────
+// API: Upload video 
 router.post('/api/upload', upload.fields([
   { name: 'video', maxCount: 1 },
   { name: 'thumbnail', maxCount: 1 }
@@ -88,7 +88,7 @@ router.post('/api/upload', upload.fields([
   }
 });
 
-// ── API: Get single video ─────────────────────────────────────────────────────
+// ── API: Get single video 
 router.get('/api/video/:id', async (req, res) => {
   try {
     const video = await Video.findById(req.params.id);
@@ -107,7 +107,7 @@ router.get('/api/video/:id', async (req, res) => {
   }
 });
 
-// ── API: Delete video ─────────────────────────────────────────────────────────
+// ── API: Delete video 
 router.delete('/api/video/:id', async (req, res) => {
   try {
     const video = await Video.findByIdAndDelete(req.params.id);

@@ -61,37 +61,64 @@ nav a:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #f0f0f0;
+  color: #333;
   text-align: center;
   padding: 20px;
 }
 
 .landing-content {
   max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
 }
 
-.landing h1 {
+.landing-logo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+}
+
+.logo-circle {
+  width: 120px;
+  height: 120px;
+  background: #e74c3c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 60px;
-  margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  color: white;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-size: 70px;
+  font-weight: bold;
+  color: #e74c3c;
+  letter-spacing: 2px;
 }
 
 .landing p {
-  font-size: 20px;
-  margin-bottom: 30px;
-  opacity: 0.95;
+  font-size: 16px;
+  color: #999;
+  margin: 0;
+  font-weight: 500;
 }
 
 .btn-join {
   display: inline-block;
-  background: white;
+  background: transparent;
   color: #e74c3c;
   padding: 15px 60px;
   font-size: 18px;
   font-weight: bold;
-  border: 2px solid white;
-  border-radius: 50px;
+  border: 2px solid #e74c3c;
+  border-radius: 5px;
   text-decoration: none;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -100,8 +127,8 @@ nav a:hover {
 .btn-join:hover {
   background: #e74c3c;
   color: white;
-  transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
 }
 
 /* ── Videos Grid ───────────────────────────────────────────────────────────── */
@@ -241,7 +268,7 @@ nav a:hover {
 
 /* ── Upload Form ───────────────────────────────────────────────────────────── */
 .upload-container {
-  max-width: 700px;
+  max-width: 900px;
   margin: 40px auto;
   background: white;
   padding: 40px;
@@ -252,19 +279,38 @@ nav a:hover {
 .upload-container h1 {
   color: #333;
   margin-bottom: 30px;
-  text-align: center;
+  text-align: left;
+  font-size: 24px;
+}
+
+.upload-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.upload-form-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.upload-form-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .form-group {
-  margin-bottom: 25px;
+  margin-bottom: 0;
 }
 
 label {
   display: block;
   margin-bottom: 8px;
-  color: #333;
-  font-weight: 600;
-  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  font-size: 13px;
 }
 
 input[type="text"],
@@ -272,10 +318,10 @@ input[type="email"],
 textarea,
 select {
   width: 100%;
-  padding: 12px;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  font-size: 14px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
   transition: all 0.3s ease;
   font-family: inherit;
 }
@@ -286,7 +332,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: #e74c3c;
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.1);
 }
 
 input[type="text"].error,
@@ -302,13 +348,18 @@ textarea {
 
 /* ── File Upload Areas ─────────────────────────────────────────────────────── */
 .file-upload-area {
-  border: 3px dashed #ddd;
-  border-radius: 8px;
-  padding: 30px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 40px 20px;
   text-align: center;
   transition: all 0.3s ease;
   background: #fafafa;
   cursor: pointer;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .file-upload-area:hover {
@@ -326,19 +377,20 @@ textarea {
 }
 
 .file-upload-icon {
-  font-size: 40px;
+  font-size: 32px;
   margin-bottom: 10px;
 }
 
 .file-upload-text {
   color: #999;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .file-upload-text strong {
-  color: #333;
+  color: #666;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
+  font-size: 13px;
 }
 
 /* ── Preview Areas ─────────────────────────────────────────────────────────── */
@@ -394,15 +446,15 @@ textarea {
   display: flex;
   gap: 15px;
   margin-top: 30px;
+  justify-content: flex-end;
 }
 
 button {
-  flex: 1;
-  padding: 14px;
-  font-size: 16px;
+  padding: 12px 40px;
+  font-size: 14px;
   font-weight: bold;
   border: none;
-  border-radius: 5px;
+  border-radius: 3px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -415,8 +467,8 @@ button {
 .btn-submit:hover {
   background: #c0392b;
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
 }
 
 .btn-submit:active {
@@ -431,8 +483,8 @@ button {
 .btn-reset:hover {
   background: #999;
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* ── Success Message ───────────────────────────────────────────────────────── */
@@ -556,23 +608,24 @@ button {
 /* ── Responsive Design ─────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .landing h1 {
-    font-size: 40px;
+    font-size: 50px;
   }
 
   .landing p {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .videos-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
 
   .upload-container {
     padding: 20px;
   }
 
-  .video-details {
+  .upload-wrapper {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
 
   header {
@@ -585,7 +638,12 @@ button {
   }
 
   .form-buttons {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  button {
+    flex: 1;
   }
 }
 

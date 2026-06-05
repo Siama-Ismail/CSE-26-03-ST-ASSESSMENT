@@ -14,73 +14,76 @@ html(lang="en")
         a(href="/") Home
 
     .upload-container
-      h1 Upload Your Video
+      h1 Upload your video
       
       form#uploadForm
         // Success message (will be shown by JavaScript)
         .success-message
 
-        // Title Field
-        .form-group
-          label(for="title") Video Title *
-          input#title(type="text" name="title" placeholder="Enter a catchy title for your video" required)
-          .error-message
+        .upload-wrapper
+          // Left Column - Form Fields
+          .upload-form-left
+            // Title Field
+            .form-group
+              label(for="title") Video Title
+              input#title(type="text" name="title" placeholder="Enter a catchy title" required)
+              .error-message
 
-        // Description Field
-        .form-group
-          label(for="description") Description *
-          textarea#description(name="description" placeholder="Describe what your video is about..." required)
-          .error-message
+            // Description Field
+            .form-group
+              label(for="description") Description (Optional)
+              textarea#description(name="description" placeholder="Describe what your video is about...")
+              .error-message
 
-        // Quality Selection
-        .form-group
-          label(for="quality") Video Quality *
-          select#quality(name="quality" required)
-            option(value="") Select Quality
-            option(value="360p") 360p - Standard Definition
-            option(value="720p") 720p - HD
-            option(value="1080p") 1080p - Full HD
-          .error-message
+            // Quality Selection
+            .form-group
+              label(for="quality") Video Quality
+              select#quality(name="quality" required)
+                option(value="") Select Quality
+                option(value="360p") 360p
+                option(value="720p") 720p
+                option(value="1080p") 1080p
+              .error-message
 
-        // Category Field
-        .form-group
-          label(for="category") Category *
-          input#category(type="text" name="category" placeholder="e.g., Gaming, Music, Education, Sports..." required)
-          .error-message
+            // Category Field
+            .form-group
+              label(for="category") Category
+              input#category(type="text" name="category" placeholder="Gaming, Music, Education..." required)
+              .error-message
 
-        // Tags Field
-        .form-group
-          label(for="tags") Tags *
-          input#tags(type="text" name="tags" placeholder="e.g., gaming, funny, tutorial (comma separated)" required)
-          .error-message
+            // Tags Field
+            .form-group
+              label(for="tags") Tags
+              input#tags(type="text" name="tags" placeholder="comma separated" required)
+              .error-message
 
-        // Video Upload Area
-        .form-group
-          label Video File *
-          #videoUploadArea.file-upload-area
-            .file-upload-icon 📹
-            .file-upload-text
-              strong Click to upload or drag and drop
-              | MP4, MPEG, MOV, or AVI (Max 500MB)
-            input#videoInput(type="file" name="video" accept="video/*" required)
-            .preview-area
-          .error-message
+          // Right Column - Upload Areas
+          .upload-form-right
+            // Video Upload Area
+            .form-group
+              label Video File *
+              #videoUploadArea.file-upload-area
+                .file-upload-icon 📹
+                .file-upload-text
+                  strong Upload video
+                  | Drag and drop or click
+                input#videoInput(type="file" name="video" accept="video/*" required)
+                .preview-area
 
-        // Thumbnail Upload Area
-        .form-group
-          label Thumbnail Image *
-          #thumbnailUploadArea.file-upload-area
-            .file-upload-icon 
-            .file-upload-text
-              strong Click to upload or drag and drop
-              | JPEG, PNG, or GIF (Max 500MB)
-            input#thumbnailInput(type="file" name="thumbnail" accept="image/*" required)
-            .preview-area
-          .error-message
+            // Thumbnail Upload Area
+            .form-group
+              label Thumbnail Image *
+              #thumbnailUploadArea.file-upload-area
+                .file-upload-icon ☁️
+                .file-upload-text
+                  strong Upload Thumbnail
+                  | Drag and drop or click
+                input#thumbnailInput(type="file" name="thumbnail" accept="image/*" required)
+                .preview-area
 
         // Form Buttons
         .form-buttons
-          button#submitBtn.btn-submit(type="button") Upload Video
-          button#resetBtn.btn-reset(type="button") Reset
+          button#submitBtn.btn-submit(type="button") UPLOAD
+          button#resetBtn.btn-reset(type="button") Unsubmit me
 
     script(src="/js/script.js")
