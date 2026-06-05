@@ -36,7 +36,7 @@ router.post('/api/upload', upload.fields([
     const { title, description, quality, category, tags } = req.body;
 
     // Validation
-    if (!title || !description || !quality || !category || !tags) {
+    if (!title || !description || !quality || !category || !tags || !date) {
       return res.status(400).json({ 
         success: false, 
         message: 'All fields are required' 
