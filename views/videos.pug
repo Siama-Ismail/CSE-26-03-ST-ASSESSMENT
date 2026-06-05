@@ -1,0 +1,49 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    link(rel="stylesheet" href="/css/style.css")
+  body
+    header
+      .logo Videx
+      nav
+        a(href="/videos") My Videos
+        a(href="/upload") Upload
+        a(href="/") Home
+    
+    .container
+      .videos-header
+        h1 My Videos
+        a.btn-upload(href="/upload") + Upload Video
+      
+      if videos && videos.length > 0
+        .videos-grid
+          each video in videos
+            .video-card(onclick=`playVideo('${video._id}')`)
+              .video-thumbnail
+                img(src=video.thumbnailPath alt=video.title)
+                .play-icon ▶
+              .video-info
+                .video-title= video.title
+                .video-meta
+                  span.quality-badge= video.quality
+                  span.video-date= new Date(video.uploadedAt).toLocaleDateString()
+      else
+        .empty-state
+          h2 No videos yet
+          p Start by uploading your first video!
+          a.btn-upload(href="/upload") + Upload Video
+
+    // Video Player Modal
+    #videoModal.modal
+      .modal-content
+        .modal-header
+          h2 Video Player
+          button.modal-close(onclick="closeVideoModal()") ×
+        .modal-body
+          .video-player
+          .video-details
+
+    script(src="/js/script.js")

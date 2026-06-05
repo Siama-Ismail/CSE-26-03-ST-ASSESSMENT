@@ -1,0 +1,13 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    link(rel="stylesheet" href="/css/style.css")
+  body
+    .container
+      .empty-state(style="margin-top: 100px")
+        h2 Server Error
+        p= message || 'Something went wrong. Please try again later.'
+        a.btn-upload(href="/") Go Back Home

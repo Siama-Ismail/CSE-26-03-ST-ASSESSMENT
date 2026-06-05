@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Uploaded files
+uploads/
+
+# Other directories
+CSE-26-03-ST-ASSESSMENT/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+.npm/
