@@ -240,47 +240,80 @@ class VideoUploadManager {
     this.uploadVideo();
   }
 
-  uploadVideo() {
-    const formData = new FormData();
-    formData.append('title', document.getElementById('title').value);
-    formData.append('description', document.getElementById('description').value);
-    formData.append('quality', document.getElementById('quality').value);
-    formData.append('category', document.getElementById('category').value);
-    formData.append('tags', document.getElementById('tags').value);
-    formData.append('video', this.videoFile);
-    formData.append('thumbnail', this.thumbnailFile);
+  async uploadVideo() {
+    let config;
+    try {
+      config = await (await fetch('/api/config')).json();
+    } catch (e) {
+      this.showErrorMessage('Could not load upload configuration');
+      return;
+    }
 
-    this.submitBtn.disabled = true;
-    this.submitBtn.classList.add('loading');
-    this.submitBtn.textContent = 'Uploading...';
+    if (!config.cloudName || !config.uploadPreset) {
+      this.showErrorMessage('Upload service is not configured yet.');
+      return;
+    }
 
-    fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          this.showSuccessMessage('Video uploaded successfully!');
-          this.resetForm();
-          
-          // Redirect to videos page after 2 seconds
-          setTimeout(() => {
-            window.location.href = '/videos';
-          }, 2000);
-        } else {
-          this.showErrorMessage(data.message || 'Upload failed');
-        }
-      })
-      .catch(err => {
-        console.error('Upload error:', err);
-        this.showErrorMessage('An error occurred during upload');
-      })
-      .finally(() => {
-        this.submitBtn.disabled = false;
-        this.submitBtn.classList.remove('loading');
-        this.submitBtn.textContent = 'Upload Video';
-      });
+    this.setUploading(true, 'Uploading video...');
+
+    try {
+      const videoUrl = await this.uploadToCloudinary(this.videoFile, 'video', config);
+
+      this.setUploading(true, 'Uploading thumbnail...');
+      const thumbnailUrl = await this.uploadToCloudinary(this.thumbnailFile, 'image', config);
+
+      this.setUploading(true, 'Saving video...');
+      const formData = new FormData();
+      formData.append('title', document.getElementById('title').value);
+      formData.append('description', document.getElementById('description').value);
+      formData.append('quality', document.getElementById('quality').value);
+      formData.append('category', document.getElementById('category').value);
+      formData.append('tags', document.getElementById('tags').value);
+      formData.append('videoPath', videoUrl);
+      formData.append('thumbnailPath', thumbnailUrl);
+
+      const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await response.json();
+      if (data.success) {
+        this.showSuccessMessage('Video uploaded successfully!');
+        this.resetForm();
+        setTimeout(() => { window.location.href = '/videos'; }, 2000);
+      } else {
+        this.showErrorMessage(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      console.error('Upload error:', err);
+      this.showErrorMessage(err.message || 'An error occurred during upload');
+    } finally {
+      this.setUploading(false);
+    }
+  }
+
+  async uploadToCloudinary(file, resourceType, config) {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', config.uploadPreset);
+    fd.append('resource_type', resourceType);
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${config.cloudName}/${resourceType}/upload`,
+      { method: 'POST', body: fd }
+    );
+    const data = await res.json();
+    if (!res.ok || !data.secure_url) {
+      const msg = data.error && data.error.message ? data.error.message : 'Upload to Cloudinary failed';
+      throw new Error(msg);
+    }
+    return data.secure_url;
+  }
+
+  setUploading(on, label) {
+    this.submitBtn.disabled = on;
+    this.submitBtn.textContent = label || 'Upload Video';
+    if (on) {
+      this.submitBtn.classList.add('loading');
+    } else {
+      this.submitBtn.classList.remove('loading');
+    }
   }
 
   showSuccessMessage(message) {

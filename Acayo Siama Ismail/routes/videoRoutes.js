@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/upload');
 const Video = require('../models/Video');
 const fs = require('fs');
 const path = require('path');
@@ -29,26 +28,24 @@ router.get('/upload', (req, res) => {
   res.render('upload', { title: 'Upload Video' });
 });
 
-// API: Upload video 
-router.post('/api/upload', upload.fields([
-  { name: 'video', maxCount: 1 },
-  { name: 'thumbnail', maxCount: 1 }
-]), async (req, res) => {
+// API: Cloudinary config (cloud name + unsigned upload preset) for client uploads
+router.get('/api/config', (req, res) => {
+  res.json({
+    cloudName: process.env.CLOUD_NAME || '',
+    uploadPreset: process.env.CLOUD_PRESET || ''
+  });
+});
+
+// API: Upload video (metadata; files are uploaded to Cloudinary by the client)
+router.post('/api/upload', async (req, res) => {
   try {
-    const { title, description, quality, category, tags } = req.body;
+    const { title, description, quality, category, tags, videoPath, thumbnailPath } = req.body;
 
     // Validation
-    if (!title || !description || !quality || !category || !tags) {
+    if (!title || !description || !quality || !category || !tags || !videoPath || !thumbnailPath) {
       return res.status(400).json({ 
         success: false, 
-        message: 'All fields are required' 
-      });
-    }
-
-    if (!req.files.video || !req.files.thumbnail) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Both video and thumbnail are required' 
+        message: 'All fields and uploaded files are required' 
       });
     }
 
@@ -59,8 +56,8 @@ router.post('/api/upload', upload.fields([
       quality,
       category: category.trim(),
       tags: tags.trim(),
-      videoPath: `/uploads/${req.files.video[0].filename}`,
-      thumbnailPath: `/uploads/${req.files.thumbnail[0].filename}`
+      videoPath: videoPath,
+      thumbnailPath: thumbnailPath
     });
 
     await video.save();
@@ -72,17 +69,6 @@ router.post('/api/upload', upload.fields([
     });
   } catch (err) {
     console.error('Upload error:', err);
-    
-    // Clean up uploaded files if there's an error
-    if (req.files?.video?.[0]) {
-      const fs = require('fs');
-      fs.unlink(req.files.video[0].path, () => {});
-    }
-    if (req.files?.thumbnail?.[0]) {
-      const fs = require('fs');
-      fs.unlink(req.files.thumbnail[0].path, () => {});
-    }
-
     res.status(500).json({ 
       success: false, 
       message: err.message || 'Upload failed' 
@@ -120,7 +106,14 @@ router.get('/api/video/:id/download', async (req, res) => {
       });
     }
 
-    const filePath = path.join(__dirname, '../uploads', path.basename(video.videoPath));
+    const videoUrl = video.videoPath || '';
+    // Cloudinary URL -> force-download by injecting the fl_attachment flag
+    if (videoUrl.includes('res.cloudinary.com')) {
+      const dlUrl = videoUrl.replace('/video/upload/', '/video/upload/fl_attachment/');
+      return res.redirect(dlUrl);
+    }
+    // Legacy local file fallback
+    const filePath = path.join(__dirname, '../uploads', path.basename(videoUrl));
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ 
         success: false, 
@@ -128,7 +121,7 @@ router.get('/api/video/:id/download', async (req, res) => {
       });
     }
 
-    const ext = path.extname(video.videoPath) || '.mp4';
+    const ext = path.extname(videoUrl) || '.mp4';
     const base = video.title.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase() || 'video';
     res.download(filePath, base + ext);
   } catch (err) {
