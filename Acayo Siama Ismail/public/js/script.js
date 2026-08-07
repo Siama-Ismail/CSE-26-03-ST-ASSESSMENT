@@ -263,16 +263,19 @@ class VideoUploadManager {
       const thumbnailUrl = await this.uploadToCloudinary(this.thumbnailFile, 'image', config);
 
       this.setUploading(true, 'Saving video...');
-      const formData = new FormData();
-      formData.append('title', document.getElementById('title').value);
-      formData.append('description', document.getElementById('description').value);
-      formData.append('quality', document.getElementById('quality').value);
-      formData.append('category', document.getElementById('category').value);
-      formData.append('tags', document.getElementById('tags').value);
-      formData.append('videoPath', videoUrl);
-      formData.append('thumbnailPath', thumbnailUrl);
-
-      const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: document.getElementById('title').value,
+          description: document.getElementById('description').value,
+          quality: document.getElementById('quality').value,
+          category: document.getElementById('category').value,
+          tags: document.getElementById('tags').value,
+          videoPath: videoUrl,
+          thumbnailPath: thumbnailUrl
+        })
+      });
       const data = await response.json();
       if (data.success) {
         this.showSuccessMessage('Video uploaded successfully!');
