@@ -392,7 +392,7 @@ function showVideoModal(video) {
       <div class="detail-value">${new Date(video.uploadedAt).toLocaleDateString()}</div>
     </div>
     <a class="btn-download" href="/api/video/${video._id}/download" download>
-      ⬇ Download Video
+      Download Video
     </a>
   `;
 
