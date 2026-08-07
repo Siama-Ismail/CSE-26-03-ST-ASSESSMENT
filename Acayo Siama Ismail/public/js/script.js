@@ -374,9 +374,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Video player functionality
-function playVideo(videoId) {
-  fetch(`/api/video/${videoId}`)
+function deleteVideo(videoId) {
+  if (!confirm('Delete this video permanently?')) return;
+  fetch(`/api/video/${videoId}`, { method: 'DELETE' })
     .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert(data.message || 'Delete failed');
+      }
+    })
+    .catch(err => {
+      console.error('Delete error:', err);
+      alert('Error deleting video');
+    });
+}
+
+function playVideo(videoId) {
+  fetch(`/api/video/${videoId}`)    .then(res => res.json())
     .then(data => {
       if (data.success) {
         showVideoModal(data.video);
@@ -394,9 +410,12 @@ function showVideoModal(video) {
   const modal = document.getElementById('videoModal') || createVideoModal();
   
   const playerDiv = modal.querySelector('.video-player');
+  const extMatch = (video.videoPath || '').match(/\.(\w+)(\?.*)?$/);
+  const ext = extMatch ? extMatch[1].toLowerCase() : 'mp4';
+  const mime = ext === 'webm' ? 'video/webm' : ext === 'ogg' ? 'video/ogg' : 'video/mp4';
   playerDiv.innerHTML = `
     <video width="100%" height="100%" controls>
-      <source src="${video.videoPath}" type="video/mp4">
+      <source src="${video.videoPath}" type="${mime}">
       Your browser does not support the video tag.
     </video>
   `;

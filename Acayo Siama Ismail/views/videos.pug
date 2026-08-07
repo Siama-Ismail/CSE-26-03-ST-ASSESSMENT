@@ -24,7 +24,9 @@ html(lang="en")
                 .video-meta
                   span.quality-badge= video.quality
                   span.video-date= new Date(video.uploadedAt).toLocaleDateString()
-                a.btn-download.card(onclick="event.stopPropagation()" href="/api/video/" + video._id + "/download" download) Download
+                .video-actions
+                  a.btn-download.card(onclick="event.stopPropagation()" href="/api/video/" + video._id + "/download" download) Download
+                  a.btn-delete.card(onclick="event.stopPropagation(); deleteVideo('" + video._id + "')") Delete
       else
         .empty-state
           h2 No videos yet

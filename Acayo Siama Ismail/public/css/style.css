@@ -712,3 +712,32 @@ button {
 }
 .btn-download.card:hover { background: rgba(37,99,235,.25); color: #fff; }
 
+
+/* Upload header */.upload-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.upload-head .btn-download { margin-top: 0; }
+
+/* Card actions (download + delete) */
+.video-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.btn-delete.card {
+  margin-top: 0;
+  padding: 7px 12px;
+  font-size: 12px;
+  background: rgba(220,38,38,.15);
+  color: #ff7a7a;
+  border: 1px solid rgba(220,38,38,.4);
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-delete.card:hover { background: rgba(220,38,38,.25); color: #fff; }
+
