@@ -36,7 +36,7 @@ router.post('/api/upload', upload.fields([
     const { title, description, quality, category, tags } = req.body;
 
     // Validation
-    if (!title || !description || !quality || !category || !tags || !date) {
+    if (!title || !description || !quality || !category || !tags) {
       return res.status(400).json({ 
         success: false, 
         message: 'All fields are required' 
@@ -122,8 +122,8 @@ router.delete('/api/video/:id', async (req, res) => {
     const fs = require('fs');
     const path = require('path');
     
-    const videoPath = path.join(__dirname, '../public', video.videoPath);
-    const thumbnailPath = path.join(__dirname, '../public', video.thumbnailPath);
+    const videoPath = path.join(__dirname, '../uploads', path.basename(video.videoPath));
+    const thumbnailPath = path.join(__dirname, '../uploads', path.basename(video.thumbnailPath));
     
     if (fs.existsSync(videoPath)) fs.unlinkSync(videoPath);
     if (fs.existsSync(thumbnailPath)) fs.unlinkSync(thumbnailPath);
