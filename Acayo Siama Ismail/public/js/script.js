@@ -391,6 +391,9 @@ function showVideoModal(video) {
       <div class="detail-label">Uploaded</div>
       <div class="detail-value">${new Date(video.uploadedAt).toLocaleDateString()}</div>
     </div>
+    <a class="btn-download" href="/api/video/${video._id}/download" download>
+      ⬇ Download Video
+    </a>
   `;
 
   modal.classList.add('show');

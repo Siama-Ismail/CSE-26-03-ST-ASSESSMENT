@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/upload');
 const Video = require('../models/Video');
+const fs = require('fs');
+const path = require('path');
 
 // Landing page 
 router.get('/', (req, res) => {
@@ -103,6 +105,37 @@ router.get('/api/video/:id', async (req, res) => {
     res.status(500).json({ 
       success: false, 
       message: 'Error fetching video' 
+    });
+  }
+});
+
+// ── API: Download single video 
+router.get('/api/video/:id/download', async (req, res) => {
+  try {
+    const video = await Video.findById(req.params.id);
+    if (!video) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Video not found' 
+      });
+    }
+
+    const filePath = path.join(__dirname, '../uploads', path.basename(video.videoPath));
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Video file not found on server' 
+      });
+    }
+
+    const ext = path.extname(video.videoPath) || '.mp4';
+    const base = video.title.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase() || 'video';
+    res.download(filePath, base + ext);
+  } catch (err) {
+    console.error('Download error:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error downloading video' 
     });
   }
 });
