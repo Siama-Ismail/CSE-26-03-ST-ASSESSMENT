@@ -36,6 +36,14 @@ const videoSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Thumbnail path is required']
   },
+  videoId: {
+    type: String,
+    default: null
+  },
+  deleteToken: {
+    type: String,
+    default: null
+  },
   uploadedAt: {
     type: Date,
     default: Date.now

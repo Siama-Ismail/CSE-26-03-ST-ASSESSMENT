@@ -3,6 +3,8 @@ class VideoUploadManager {
   constructor() {
     this.videoFile = null;
     this.thumbnailFile = null;
+    this.uploadAbort = null;
+    this.isUploading = false;
     this.init();
   }
 
@@ -14,6 +16,7 @@ class VideoUploadManager {
     this.videoInput = document.getElementById('videoInput');
     this.thumbnailInput = document.getElementById('thumbnailInput');
     this.submitBtn = document.getElementById('submitBtn');
+    this.cancelBtn = document.getElementById('cancelBtn');
 
     if (!this.form) return; // Exit if no form found
 
@@ -50,6 +53,9 @@ class VideoUploadManager {
     // Buttons
     if (this.submitBtn) {
       this.submitBtn.addEventListener('click', (e) => this.handleSubmit(e));
+    }
+    if (this.cancelBtn) {
+      this.cancelBtn.addEventListener('click', (e) => this.cancelUpload(e));
     }
   }
 
@@ -245,73 +251,95 @@ class VideoUploadManager {
     try {
       config = await (await fetch('/api/config')).json();
     } catch (e) {
-      this.showErrorMessage('Could not load upload configuration');
+      this.showStatusMessage('Could not load upload configuration', 'error');
       return;
     }
 
     if (!config.cloudName || !config.uploadPreset) {
-      this.showErrorMessage('Upload service is not configured yet.');
+      this.showStatusMessage('Upload service is not configured yet.', 'error');
       return;
     }
+
+    this.uploadAbort = new AbortController();
+    const signal = this.uploadAbort.signal;
 
     this.setUploading(true, 'Uploading video...');
 
     try {
-      const videoUrl = await this.uploadToCloudinary(this.videoFile, 'video', config);
+      const videoResult = await this.uploadToCloudinary(this.videoFile, 'video', config, signal);
 
       this.setUploading(true, 'Uploading thumbnail...');
-      const thumbnailUrl = await this.uploadToCloudinary(this.thumbnailFile, 'image', config);
+      const thumbnailResult = await this.uploadToCloudinary(this.thumbnailFile, 'image', config, signal);
 
       this.setUploading(true, 'Saving video...');
       const response = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: signal,
         body: JSON.stringify({
           title: document.getElementById('title').value,
           description: document.getElementById('description').value,
           quality: document.getElementById('quality').value,
           category: document.getElementById('category').value,
           tags: document.getElementById('tags').value,
-          videoPath: videoUrl,
-          thumbnailPath: thumbnailUrl
+          videoPath: videoResult.secure_url,
+          thumbnailPath: thumbnailResult.secure_url,
+          videoId: videoResult.public_id,
+          deleteToken: videoResult.delete_token
         })
       });
       const data = await response.json();
       if (data.success) {
-        this.showSuccessMessage('Video uploaded successfully!');
+        this.showStatusMessage('Video uploaded successfully!', 'success');
         this.resetForm();
         setTimeout(() => { window.location.href = '/videos'; }, 2000);
       } else {
-        this.showErrorMessage(data.message || 'Upload failed');
+        this.showStatusMessage(data.message || 'Upload failed', 'error');
       }
     } catch (err) {
-      console.error('Upload error:', err);
-      this.showErrorMessage(err.message || 'An error occurred during upload');
+      if (err.name === 'AbortError') {
+        this.showStatusMessage('Upload cancelled.', 'cancel');
+        this.resetForm();
+      } else {
+        console.error('Upload error:', err);
+        this.showStatusMessage(err.message || 'An error occurred during upload', 'error');
+      }
     } finally {
+      this.uploadAbort = null;
       this.setUploading(false);
     }
   }
 
-  async uploadToCloudinary(file, resourceType, config) {
+  async uploadToCloudinary(file, resourceType, config, signal) {
     const fd = new FormData();
     fd.append('file', file);
     fd.append('upload_preset', config.uploadPreset);
     fd.append('resource_type', resourceType);
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${config.cloudName}/${resourceType}/upload`,
-      { method: 'POST', body: fd }
+      { method: 'POST', body: fd, signal }
     );
     const data = await res.json();
     if (!res.ok || !data.secure_url) {
       const msg = data.error && data.error.message ? data.error.message : 'Upload to Cloudinary failed';
       throw new Error(msg);
     }
-    return data.secure_url;
+    return data;
+  }
+
+  cancelUpload(e) {
+    if (e) e.preventDefault();
+    if (this.uploadAbort) {
+      this.uploadAbort.abort();
+    }
+    this.resetForm();
   }
 
   setUploading(on, label) {
+    this.isUploading = on;
     this.submitBtn.disabled = on;
     this.submitBtn.textContent = label || 'Upload Video';
+    if (this.cancelBtn) this.cancelBtn.disabled = !on;
     if (on) {
       this.submitBtn.classList.add('loading');
     } else {
@@ -319,15 +347,15 @@ class VideoUploadManager {
     }
   }
 
-  showSuccessMessage(message) {
-    let successMsg = document.querySelector('.success-message');
-    if (!successMsg) {
-      successMsg = document.createElement('div');
-      successMsg.className = 'success-message';
-      this.form.insertBefore(successMsg, this.form.firstChild);
+  showStatusMessage(message, type) {
+    let statusMsg = document.querySelector('.status-message');
+    if (!statusMsg) {
+      statusMsg = document.createElement('div');
+      statusMsg.className = 'status-message';
+      this.form.insertBefore(statusMsg, this.form.firstChild);
     }
-    successMsg.textContent = message;
-    successMsg.classList.add('show');
+    statusMsg.textContent = message;
+    statusMsg.className = 'status-message show ' + (type || 'success');
   }
 
   showErrorMessage(message) {
@@ -352,10 +380,10 @@ class VideoUploadManager {
       error.classList.remove('error');
     });
 
-    // Clear success message
-    const successMsg = document.querySelector('.success-message');
-    if (successMsg) {
-      successMsg.classList.remove('show');
+    // Clear status message
+    const statusMsg = document.querySelector('.status-message');
+    if (statusMsg) {
+      statusMsg.classList.remove('show');
     }
   }
 

@@ -6,14 +6,14 @@ const path = require('path');
 
 // Landing page 
 router.get('/', (req, res) => {
-  res.render('index', { title: 'Videx - Video Streaming Platform' });
+  res.render('index', { title: 'Videx - Video Streaming Platform', active: 'home' });
 });
 
 //Videos page (after joining)
 router.get('/videos', async (req, res) => {
   try {
     const videos = await Video.find().latest();
-    res.render('videos', { title: 'My Videos', videos });
+    res.render('videos', { title: 'My Videos', videos, active: 'videos' });
   } catch (err) {
     console.error('Error fetching videos:', err);
     res.status(500).render('error', { 
@@ -25,7 +25,7 @@ router.get('/videos', async (req, res) => {
 
 //  Upload video page
 router.get('/upload', (req, res) => {
-  res.render('upload', { title: 'Upload Video' });
+  res.render('upload', { title: 'Upload Video', active: 'upload' });
 });
 
 // API: Cloudinary config (cloud name + unsigned upload preset) for client uploads
@@ -39,7 +39,7 @@ router.get('/api/config', (req, res) => {
 // API: Upload video (metadata; files are uploaded to Cloudinary by the client)
 router.post('/api/upload', async (req, res) => {
   try {
-    const { title, description, quality, category, tags, videoPath, thumbnailPath } = req.body;
+    const { title, description, quality, category, tags, videoPath, thumbnailPath, videoId, deleteToken } = req.body;
 
     // Validation
     if (!title || !description || !quality || !category || !tags || !videoPath || !thumbnailPath) {
@@ -57,7 +57,9 @@ router.post('/api/upload', async (req, res) => {
       category: category.trim(),
       tags: tags.trim(),
       videoPath: videoPath,
-      thumbnailPath: thumbnailPath
+      thumbnailPath: thumbnailPath,
+      videoId: videoId || null,
+      deleteToken: deleteToken || null
     });
 
     await video.save();
@@ -109,8 +111,14 @@ router.get('/api/video/:id/download', async (req, res) => {
     const videoUrl = video.videoPath || '';
     // Cloudinary URL -> force-download by injecting the fl_attachment flag
     if (videoUrl.includes('res.cloudinary.com')) {
-      const dlUrl = videoUrl.replace('/video/upload/', '/video/upload/fl_attachment/');
-      return res.redirect(dlUrl);
+      const marker = '/video/upload/';
+      const idx = videoUrl.indexOf(marker);
+      if (idx !== -1) {
+        const dlUrl = videoUrl.slice(0, idx) + marker + 'fl_attachment/' + videoUrl.slice(idx + marker.length);
+        return res.redirect(dlUrl);
+      }
+      // Fallback: cannot build an attachment URL, just stream the original
+      return res.redirect(videoUrl);
     }
     // Legacy local file fallback
     const filePath = path.join(__dirname, '../uploads', path.basename(videoUrl));
@@ -144,12 +152,24 @@ router.delete('/api/video/:id', async (req, res) => {
       });
     }
 
-    // Delete files
-    const fs = require('fs');
-    const path = require('path');
-    
-    const videoPath = path.join(__dirname, '../uploads', path.basename(video.videoPath));
-    const thumbnailPath = path.join(__dirname, '../uploads', path.basename(video.thumbnailPath));
+    // Best-effort: delete the media from Cloudinary using the unsigned delete token
+    if (video.deleteToken && process.env.CLOUD_NAME) {
+      try {
+        const body = new URLSearchParams();
+        body.append('token', video.deleteToken);
+        await fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/delete_by_token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString()
+        });
+      } catch (cloudErr) {
+        console.error('Cloudinary delete failed:', cloudErr.message);
+      }
+    }
+
+    // Delete local files (legacy uploads)
+    const videoPath = path.join(__dirname, '../uploads', path.basename(video.videoPath || ''));
+    const thumbnailPath = path.join(__dirname, '../uploads', path.basename(video.thumbnailPath || ''));
     
     if (fs.existsSync(videoPath)) fs.unlinkSync(videoPath);
     if (fs.existsSync(thumbnailPath)) fs.unlinkSync(thumbnailPath);

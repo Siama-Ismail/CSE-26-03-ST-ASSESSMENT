@@ -14,14 +14,16 @@ html(lang="en")
     )
 
   body
+    include partials/header
+
     .upload-container
       .upload-head
         h1 Upload your video
         a.btn-download(href="/videos") View My Videos
 
       form#uploadForm
-        // Success message (will be shown by JavaScript)
-        .success-message
+        // Status banner (success / cancelled / error, shown by JavaScript)
+        .status-message
 
         .upload-wrapper
 
@@ -120,9 +122,11 @@ html(lang="en")
 
                 .preview-area
 
-            // Upload Button
+            // Buttons
             .form-buttons
               button#submitBtn.btn-submit(type="button")
                 | UPLOAD
+              button#cancelBtn.btn-cancel(type="button" disabled)
+                | Cancel
 
     script(src="/js/script.js")

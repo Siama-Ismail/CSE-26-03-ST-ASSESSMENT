@@ -54,6 +54,18 @@ nav a:hover {
   transform: translateY(-2px);
 }
 
+nav a.active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.logo a {
+  color: white;
+  text-decoration: none;
+  display: inherit;
+  align-items: inherit;
+  gap: inherit;
+}
+
 /* ── Landing Page ──────────────────────────────────────────────────────────── */
 .landing {
   min-height: 100vh;
@@ -455,6 +467,10 @@ textarea {
   margin-top: 10px;
 }
 
+.form-buttons .btn-submit {
+  flex: 1;
+}
+
 button {
   padding: 16px 30px;
   font-size: 16px;
@@ -496,7 +512,50 @@ button {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
+.btn-cancel {
+  background: #bbb;
+  color: white;
+  font-size: 14px;
+  padding: 12px 24px;
+}
+
+.btn-cancel:hover {
+  background: #999;
+  color: white;
+}
+
+.btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ── Success Message ───────────────────────────────────────────────────────── */
+.status-message {
+  background: #27ae60;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+.status-message.show {
+  display: block;
+}
+
+.status-message.success {
+  background: #27ae60;
+}
+
+.status-message.cancel {
+  background: #f39c12;
+}
+
+.status-message.error {
+  background: #e74c3c;
+}
+
 .success-message {
   background: #27ae60;
   color: white;
@@ -704,13 +763,14 @@ button {
 .btn-download:hover { background: #1d4ed8; }
 .btn-download.card {
   margin-top: 8px;
-  padding: 7px 12px;
+  padding: 9px 10px;
   font-size: 12px;
-  background: rgba(37,99,235,.15);
-  color: #7aa2ff;
-  border: 1px solid rgba(37,99,235,.4);
+  font-weight: 600;
+  background: #2563eb;
+  color: #fff;
+  border: none;
 }
-.btn-download.card:hover { background: rgba(37,99,235,.25); color: #fff; }
+.btn-download.card:hover { background: #1d4ed8; }
 
 
 /* Upload header */.upload-head {
@@ -729,15 +789,22 @@ button {
   gap: 8px;
   margin-top: 8px;
 }
+.video-actions a {
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+}
 .btn-delete.card {
   margin-top: 0;
-  padding: 7px 12px;
+  padding: 9px 10px;
   font-size: 12px;
-  background: rgba(220,38,38,.15);
-  color: #ff7a7a;
-  border: 1px solid rgba(220,38,38,.4);
+  font-weight: 600;
+  background: #dc2626;
+  color: #fff;
+  border: none;
   cursor: pointer;
   text-decoration: none;
+  transition: background .2s;
 }
-.btn-delete.card:hover { background: rgba(220,38,38,.25); color: #fff; }
+.btn-delete.card:hover { background: #b91c1c; }
 
