@@ -698,11 +698,28 @@ button {
 
   header {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
+    padding: 15px 20px;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+
+  .logo::before {
+    font-size: 26px;
   }
 
   nav {
-    gap: 15px;
+    width: 100%;
+    gap: 8px;
+  }
+
+  nav a {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+    white-space: nowrap;
   }
 
   .form-buttons {
@@ -769,6 +786,8 @@ button {
   background: #2563eb;
   color: #fff;
   border: none;
+  border-radius: 8px;
+  line-height: 1.2;
 }
 .btn-download.card:hover { background: #1d4ed8; }
 
@@ -803,6 +822,8 @@ button {
   background: #dc2626;
   color: #fff;
   border: none;
+  border-radius: 8px;
+  line-height: 1.2;
   cursor: pointer;
   text-decoration: none;
   transition: background .2s;
