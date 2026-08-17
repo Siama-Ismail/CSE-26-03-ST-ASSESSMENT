@@ -722,6 +722,17 @@ button {
     white-space: nowrap;
   }
 
+  .video-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .video-actions a {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+  }
+
   .form-buttons {
     flex-direction: row;
     justify-content: space-between;
