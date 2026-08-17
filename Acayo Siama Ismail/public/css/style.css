@@ -793,6 +793,7 @@ button {
   flex: 1;
   justify-content: center;
   text-align: center;
+  margin-top: 0;
 }
 .btn-delete.card {
   margin-top: 0;
